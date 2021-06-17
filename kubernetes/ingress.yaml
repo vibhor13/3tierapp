@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: webapp
+  namespace: webapp
+spec:
+  rules:
+  -  http:
+      paths:
+      - path: /*
+        backend:
+          serviceName: app-frontend
+          servicePort: 80
+      - path: /api/status
+        backend:
+          serviceName: svc-app-api
+          servicePort: 3000

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: webapp
+---
+kind: Namespace
+apiVersion: v1
+metadata:
+  name: kube-logging

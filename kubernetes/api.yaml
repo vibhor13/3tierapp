@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-api-deployment
+  namespace: webapp
+  labels:
+    app: app-api
+spec:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  replicas: 3
+  selector:
+    matchLabels:
+      app: app-api
+  template:
+    metadata:
+      labels:
+        app: app-api
+    spec:
+      containers:
+        - name: app-api
+          image: gcr.io/dynamic-concept-305518/web-api:latest
+          ports:
+            - containerPort: 3000
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              scheme: HTTP
+              path: /api/status
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            limits:
+              cpu: "800m"
+            requests:
+              cpu: "100m"
+          env:
+           - name: DBUSER
+             value: "toptal"
+           - name: DB
+             value: "toptal"
+           - name: DBPASS
+             value: "toptal"
+           - name: DBHOST
+             value: "postgres-db"
+           - name: DBPORT
+             value: "5432"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc-app-api
+  namespace: webapp
+spec:
+  selector:
+    app: app-api
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
